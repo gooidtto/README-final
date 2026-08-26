@@ -2,6 +2,7 @@
 
 目前仓库是：
 Railway-native 通用部署版本
+---
 也就是：
 任意 GitHub 账户 → 任意仓库 → 任意新的 Railway Project/Service → 按 README 配置 Railway Networking → 可部署。
 
