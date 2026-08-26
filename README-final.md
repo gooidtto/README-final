@@ -4,19 +4,18 @@
 
 项目提供：
 
--   Railway 动态 Networking 发现
--   Xray Gateway
--   4 个 Railway 基础节点
--   可选的第 5 个 Cloudflare XHTTP TLS 节点
--   动态订阅生成
--   `/health` 与 `/ready` 健康检查
--   首次 Railway Networking provisioning 的自动重试与退避
--   Repository-Native Stable 运行时版本身份
+- Railway 动态 Networking 发现
+- Xray Gateway
+- 4 个 Railway 基础节点
+- 可选的第 5 个 Cloudflare XHTTP TLS 节点
+- 动态订阅生成
+- `/health` 与 `/ready` 健康检查
+- 首次 Railway Networking provisioning 的自动重试与退避
+- Repository-Native Stable 运行时版本身份
 
-> **推荐部署方式：直接使用当前 GitHub 仓库 / Railway Deploy
-> 按钮。不要使用旧 ZIP 作为长期部署源。**
+> **推荐部署方式：直接使用当前 GitHub 仓库 / Railway Deploy 按钮。不要使用旧 ZIP 作为长期部署源。**
 
-------------------------------------------------------------------------
+---
 
 # 🚀 Deploy on Railway
 
@@ -24,18 +23,15 @@
 
 点击：
 
-```{=html}
 <p align="center">
-```
-`<a href="https://railway.com/new/github?utm_source=github&utm_medium=readme&utm_campaign=railway-portable">`{=html}
-`<img src="https://railway.com/button.svg" alt="Deploy on Railway" width="260">`{=html}
-`</a>`{=html}
-```{=html}
+  <a href="https://railway.com/new/github?utm_source=github&utm_medium=readme&utm_campaign=railway-portable">
+    <img src="https://railway.com/button.svg" alt="Deploy on Railway" width="260">
+  </a>
 </p>
-```
+
 选择仓库后刷新 Railway 页面，确认已经进入项目。
 
-------------------------------------------------------------------------
+---
 
 # 2. Railway 基础配置
 
@@ -45,22 +41,22 @@
 
 添加 Persistent Volume：
 
-``` text
+```text
 Mount Path:
 /data
 ```
 
 `/data` 用于保存：
 
--   运行时身份
--   UUID / 密钥等生成状态
--   runtime manifest
--   订阅状态
--   日志及其他运行时状态
+- 运行时身份
+- UUID / 密钥等生成状态
+- runtime manifest
+- 订阅状态
+- 日志及其他运行时状态
 
 不要把 `/data` 中的运行时秘密提交到 Git。
 
-------------------------------------------------------------------------
+---
 
 # 3. Networking
 
@@ -68,46 +64,43 @@ Mount Path:
 
 统一使用：
 
-``` text
+```text
 8080
 ```
 
 创建：
 
-1.  **Public Domain**
-2.  **TCP Proxy**
+1. **Public Domain**
+2. **TCP Proxy**
 
 TCP Proxy 的：
 
-``` text
+```text
 Target Port = 8080
 ```
 
-> Node 2、Node 3、Node 4 使用 Railway TCP Proxy 作为客户端 TCP
-> 入口；Node 1 使用 Railway HTTPS/Public Domain；Node 5 使用
-> Cloudflare（启用后）。
+> Node 2、Node 3、Node 4 使用 Railway TCP Proxy 作为客户端 TCP 入口；Node 1 使用 Railway HTTPS/Public Domain；Node 5 使用 Cloudflare（启用后）。
 
 ### 不要手动写死 Railway 地址
 
 不要在代码或变量中写死：
 
-``` text
+```text
 *.up.railway.app
 *.proxy.rlwy.net
 ```
 
 项目会在运行时读取当前 Deployment 的 Railway Networking 信息。
 
-------------------------------------------------------------------------
+---
 
 # 4. 首次部署为什么可能需要等待？
 
-Railway 首次创建 Public Domain / TCP Proxy 后，Networking
-资源可能比容器启动稍晚完成。
+Railway 首次创建 Public Domain / TCP Proxy 后，Networking 资源可能比容器启动稍晚完成。
 
 本项目已经加入 **Networking Race Hardened**：
 
-``` text
+```text
 启动
  ↓
 读取当前 Deployment Networking
@@ -149,22 +142,21 @@ Xray 配置检查
 
 正常情况下等待程序自动完成 discovery 即可。
 
-只有在整个等待窗口结束后仍然无法获得有效的当前 Deployment
-Networking，才应检查 Railway Networking 配置。
+只有在整个等待窗口结束后仍然无法获得有效的当前 Deployment Networking，才应检查 Railway Networking 配置。
 
 ### 不建议的操作
 
 不要因为第一次启动时短暂没有读取到 Networking 就立即：
 
--   删除 Public Domain
--   删除 TCP Proxy
--   重新创建服务
--   修改节点配置
--   修改订阅配置
+- 删除 Public Domain
+- 删除 TCP Proxy
+- 重新创建服务
+- 修改节点配置
+- 修改订阅配置
 
 优先等待自动 retry 完成。
 
-------------------------------------------------------------------------
+---
 
 # 5. 如何确认 Networking 已经正确？
 
@@ -172,7 +164,7 @@ Networking，才应检查 Railway Networking 配置。
 
 应看到类似：
 
-``` text
+```text
 RAILWAY_NETWORKING_SOURCE=current-deployment-environment
 RAILWAY_NETWORKING_AUTHORITATIVE=true
 RAILWAY_CURRENT_PUBLIC=xxxx.up.railway.app
@@ -180,35 +172,35 @@ RAILWAY_CURRENT_PUBLIC=xxxx.up.railway.app
 
 并且：
 
-``` text
+```text
 PRODUCTION_GUARD=PASS
 ```
 
 之后应看到：
 
-``` text
+```text
 SUBSCRIPTION_ENDPOINT_INVARIANT=PASS
 ```
 
 最终节点数量应为：
 
-``` text
+```text
 4
 ```
 
 或者 Cloudflare 配置完整时：
 
-``` text
+```text
 5
 ```
 
-------------------------------------------------------------------------
+---
 
 # 6. 节点结构
 
 ## Node 1
 
-``` text
+```text
 VLESS
 XHTTP
 TLS
@@ -216,7 +208,7 @@ TLS
 
 入口：
 
-``` text
+```text
 Railway Public Domain :443
         ↓
       :8080
@@ -224,11 +216,11 @@ Railway Public Domain :443
       10086
 ```
 
-------------------------------------------------------------------------
+---
 
 ## Node 2
 
-``` text
+```text
 VLESS
 RAW TCP
 REALITY
@@ -237,7 +229,7 @@ Vision
 
 入口：
 
-``` text
+```text
 Railway TCP Proxy
         ↓
       :8080
@@ -245,11 +237,11 @@ Railway TCP Proxy
       10087
 ```
 
-------------------------------------------------------------------------
+---
 
 ## Node 3
 
-``` text
+```text
 VLESS
 XHTTP
 REALITY
@@ -257,7 +249,7 @@ REALITY
 
 入口：
 
-``` text
+```text
 Railway TCP Proxy
         ↓
       :8080
@@ -265,11 +257,11 @@ Railway TCP Proxy
       10088
 ```
 
-------------------------------------------------------------------------
+---
 
 ## Node 4
 
-``` text
+```text
 VLESS
 gRPC
 REALITY
@@ -277,7 +269,7 @@ REALITY
 
 入口：
 
-``` text
+```text
 Railway TCP Proxy
         ↓
       :8080
@@ -285,13 +277,13 @@ Railway TCP Proxy
       10089
 ```
 
-------------------------------------------------------------------------
+---
 
 ## Node 5（可选）
 
 Node 5 只有在 Cloudflare 配置完整时才启用：
 
-``` text
+```text
 VLESS
 XHTTP
 TLS
@@ -300,7 +292,7 @@ Cloudflare
 
 公网路径：
 
-``` text
+```text
 Internet
    ↓
 Cloudflare
@@ -312,13 +304,13 @@ local XHTTP origin
 
 Node 5 不使用旧的 WebSocket 配置。
 
-------------------------------------------------------------------------
+---
 
 # 7. Node 5 Cloudflare 配置
 
 如果需要第 5 个节点，在 Railway Variables 中配置：
 
-``` text
+```text
 CLOUDFLARE_TUNNEL_TOKEN
 CLOUDFLARE_TUNNEL_ID
 CLOUDFLARE_PUBLIC_HOSTNAME
@@ -329,7 +321,7 @@ CLOUDFLARE_XHTTP_PATH
 
 推荐使用明确的：
 
-``` text
+```text
 CLOUDFLARE_XHTTP_*
 ```
 
@@ -337,7 +329,7 @@ CLOUDFLARE_XHTTP_*
 
 旧的：
 
-``` text
+```text
 WS_PORT
 WS_PATH
 ```
@@ -348,33 +340,32 @@ WS_PATH
 
 只有 Cloudflare 所需配置全部完整时：
 
-``` text
+```text
 CLOUDFLARE_CONFIG_STATE=enabled
 CLOUDFLARE_XHTTP=enabled
 ```
 
 运行时才加入：
 
-``` text
+```text
 Node 5
 ```
 
 否则：
 
-``` text
+```text
 CLOUDFLARE_CONFIG_STATE=disabled
 ```
 
-项目正常运行 4 个 Railway 节点，不会因为缺少 Cloudflare
-配置而导致整个部署失败。
+项目正常运行 4 个 Railway 节点，不会因为缺少 Cloudflare 配置而导致整个部署失败。
 
-------------------------------------------------------------------------
+---
 
 # 8. Scale / Regions & Replicas
 
 在 Railway：
 
-``` text
+```text
 Scale
  ↓
 Regions & Replicas
@@ -386,11 +377,11 @@ Region 可以根据实际需求调整。
 
 完成后点击：
 
-``` text
+```text
 Deploy
 ```
 
-------------------------------------------------------------------------
+---
 
 # 9. 获取订阅
 
@@ -398,19 +389,19 @@ Deploy
 
 执行：
 
-``` bash
+```bash
 cat /data/subscription_url.txt
 ```
 
 复制输出的订阅链接，导入支持 VLESS 的客户端。
 
-------------------------------------------------------------------------
+---
 
 # 10. 如何判断部署真正成功？
 
 不要只看 Railway 显示：
 
-``` text
+```text
 Deployment successful
 ```
 
@@ -418,14 +409,14 @@ Deployment successful
 
 ### Networking
 
-``` text
+```text
 RAILWAY_NETWORKING_SOURCE=current-deployment-environment
 RAILWAY_NETWORKING_AUTHORITATIVE=true
 ```
 
 ### Production Guard
 
-``` text
+```text
 PRODUCTION_GUARD=PASS
 ```
 
@@ -433,33 +424,33 @@ PRODUCTION_GUARD=PASS
 
 4 节点：
 
-``` text
+```text
 RUNTIME_NODE_COUNT=4
 SUBSCRIPTION_COUNT=4
 ```
 
 5 节点：
 
-``` text
+```text
 RUNTIME_NODE_COUNT=5
 SUBSCRIPTION_COUNT=5
 ```
 
 ### Endpoint
 
-``` text
+```text
 SUBSCRIPTION_ENDPOINT_INVARIANT=PASS
 ```
 
 ### Readiness
 
-``` text
+```text
 /ready
 ```
 
 应返回 HTTP `200`。
 
-------------------------------------------------------------------------
+---
 
 # 11. 健康检查
 
@@ -467,7 +458,7 @@ SUBSCRIPTION_ENDPOINT_INVARIANT=PASS
 
 用于检查进程级健康状态。
 
-``` text
+```text
 /health
 ```
 
@@ -475,25 +466,25 @@ SUBSCRIPTION_ENDPOINT_INVARIANT=PASS
 
 用于检查完整运行就绪状态，包括：
 
--   运行时配置
--   订阅生成
--   Endpoint 校验
--   Xray listener
--   Cloudflare Node 5（启用时）
+- 运行时配置
+- 订阅生成
+- Endpoint 校验
+- Xray listener
+- Cloudflare Node 5（启用时）
 
-``` text
+```text
 /ready
 ```
 
 只有 `/ready` 正常后，才建议使用最终订阅。
 
-------------------------------------------------------------------------
+---
 
 # 12. Runtime 生命周期
 
 每次启动都遵循：
 
-``` text
+```text
 当前 Deployment Networking
         ↓
 Networking discovery / retry
@@ -517,19 +508,19 @@ Gateway
 
 `/data` 中的持久化状态用于：
 
--   identity continuity
--   change detection
--   runtime state
+- identity continuity
+- change detection
+- runtime state
 
 而不是用于恢复已经过期的 Railway endpoint。
 
-------------------------------------------------------------------------
+---
 
 # 13. 订阅节点顺序
 
 正常 4 节点：
 
-``` text
+```text
 1. railway-xhttp-tls
 2. raw-reality-vision
 3. xhttp-reality
@@ -538,7 +529,7 @@ Gateway
 
 Cloudflare 配置完整时：
 
-``` text
+```text
 1. railway-xhttp-tls
 2. raw-reality-vision
 3. xhttp-reality
@@ -546,7 +537,7 @@ Cloudflare 配置完整时：
 5. cloudflare-xhttp-tls
 ```
 
-------------------------------------------------------------------------
+---
 
 # 14. 常见问题
 
@@ -558,22 +549,21 @@ Cloudflare 配置完整时：
 
 如果最终仍然失败，再检查：
 
--   Public Domain 是否存在
--   TCP Proxy 是否存在
--   TCP Proxy Target Port 是否为 `8080`
--   Service 是否已经重新部署
--   Railway 当前 Deployment 是否已经获得新的 Networking 环境变量
+- Public Domain 是否存在
+- TCP Proxy 是否存在
+- TCP Proxy Target Port 是否为 `8080`
+- Service 是否已经重新部署
+- Railway 当前 Deployment 是否已经获得新的 Networking 环境变量
 
-------------------------------------------------------------------------
+---
 
 ## Q2：重新创建 Networking 后为什么需要重新部署？
 
-Railway Networking 发生变化后，当前 Deployment
-需要重新获得新的环境状态。
+Railway Networking 发生变化后，当前 Deployment 需要重新获得新的环境状态。
 
 推荐：
 
-``` text
+```text
 修改 / 创建 Networking
         ↓
 Redeploy
@@ -587,13 +577,13 @@ Redeploy
 
 不要继续使用旧的 `/data` endpoint 作为权威地址。
 
-------------------------------------------------------------------------
+---
 
 ## Q3：为什么有时只有 4 个节点？
 
 如果 Cloudflare 配置没有完整提供：
 
-``` text
+```text
 CLOUDFLARE_TUNNEL_TOKEN
 CLOUDFLARE_TUNNEL_ID
 CLOUDFLARE_PUBLIC_HOSTNAME
@@ -606,15 +596,15 @@ Node 5 会自动 disabled。
 
 这是正常行为。
 
-------------------------------------------------------------------------
+---
 
-## Q4：为什么 Node 2--4 使用 TCP Proxy？
+## Q4：为什么 Node 2–4 使用 TCP Proxy？
 
 因为这三个节点需要 TCP/REALITY 传输入口。
 
 它们不是普通 HTTP ingress：
 
-``` text
+```text
 Node 2 = RAW REALITY
 Node 3 = XHTTP REALITY
 Node 4 = gRPC REALITY
@@ -622,13 +612,13 @@ Node 4 = gRPC REALITY
 
 因此不能简单把它们全部改成 Railway Public HTTPS Domain。
 
-------------------------------------------------------------------------
+---
 
 # 15. Security
 
 严禁提交以下内容到 Git：
 
-``` text
+```text
 Cloudflare Tunnel Token
 Private Keys
 UUID / Private Credentials
@@ -639,7 +629,7 @@ Railway Deployment Secrets
 
 统一使用：
 
-``` text
+```text
 Railway Variables
 +
 Persistent Volume /data
@@ -647,7 +637,7 @@ Persistent Volume /data
 
 保存部署相关秘密和运行时状态。
 
-------------------------------------------------------------------------
+---
 
 # 16. Repository-Native Stable
 
@@ -655,7 +645,7 @@ Persistent Volume /data
 
 系统按照 repository / tag / commit 等当前仓库信息推导：
 
-``` text
+```text
 RELEASE
 BUILD_ID
 SOURCE_BUILD
@@ -665,19 +655,19 @@ SOURCE_BUILD
 
 历史 baseline：
 
-``` text
+```text
 upload-baseline-2026-08-24
 ```
 
 仅作为历史基线名称保留，不作为新账户部署时的固定身份来源。
 
-------------------------------------------------------------------------
+---
 
 # 17. 正式版本
 
 当前正式基线：
 
-``` text
+```text
 Repository-Native Stable
 +
 Networking Race Hardened
@@ -685,22 +675,22 @@ Networking Race Hardened
 
 正式封版：
 
-``` text
+```text
 repository-native-stable-networking-race-hardened.zip
 ```
 
 后续修改如涉及：
 
--   节点传输
--   Gateway routing
--   Subscription format
--   Railway Networking authority
--   Cloudflare XHTTP
--   Runtime identity
+- 节点传输
+- Gateway routing
+- Subscription format
+- Railway Networking authority
+- Cloudflare XHTTP
+- Runtime identity
 
 应先完成独立验证，再合并回正式基线。
 
-------------------------------------------------------------------------
+---
 
 # ⚠️ 使用说明
 
