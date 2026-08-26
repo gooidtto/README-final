@@ -1,6 +1,6 @@
 # Railway
 
-> **推荐部署方式：直接使用当前 GitHub 仓库 / Railway Deploy 按钮。不要使用旧 ZIP 作为长期部署源。**
+> **推荐部署方式：直接使用当前 GitHub 仓库 / Railway Deploy 按钮。**
 
 ---
 
@@ -57,6 +57,7 @@ Railway 首次创建 Public Domain / TCP Proxy 后，Networking 资源可能比�
 读取当前 Deployment Networking
  ↓
 Networking 未就绪？
+ ↓
 32s
  ↓
 60s
